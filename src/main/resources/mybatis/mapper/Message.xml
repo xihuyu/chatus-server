@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Message">
+    <sql id="chatus_message">message</sql>
+
+    <resultMap id="messageMap" type="ChatMessage">
+        <id column="id" property="id"/>
+        <result column="from_id" property="fromId"/>
+        <result column="to_id" property="toId"/>
+        <result column="message" property="message"/>
+    </resultMap>
+
+
+    <!--插入消息-->
+    <insert id="insert" parameterType="ChatMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into <include refid="chatus_message"/>  (from_id,to_id,message) values(#{fromId},#{toId},#{message})
+    </insert>
+
+    <!--根据发送消息的人和接受消息的人id查询消息列表信息-->
+    <select id="findMessageById" parameterType="java.util.Map" resultMap="messageMap">
+       SELECT * from <include refid="chatus_message"/> WHERE from_id=#{fromId} and to_id=#{toId}
+    </select>
+
+    <!--根据用户id查询消息列表-->
+    <select id="findMessageByFromId" parameterType="java.lang.Integer" resultMap="messageMap">
+        SELECT * FROM <include refid="chatus_message"/> WHERE from_id=#{fromId}
+    </select>
+
+ </mapper>
